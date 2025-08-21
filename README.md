@@ -80,7 +80,7 @@
 - **弹性伸缩**：根据流量自动增加/减少容器数量
 - **大规模管理**：上千容器集中管理
 
----
+
 
 # 2. Docker的基本概念
 
@@ -153,7 +153,7 @@ Docker 时常常会混淆容器和虚拟机。
 
 ![docker](_images/docker-architecture.png)
 
----
+
 
 # 3. 环境准备与安装
 
@@ -232,7 +232,7 @@ https://desktop.docker.com/mac/main/amd64/Docker.dmg
 
 或者使用 Homebrew Cask 来进行安装：`brew install --cask docker`
 
----
+
 
 # 4. Docker镜像操作
 
@@ -340,7 +340,7 @@ docker load -i mysql_8.0.43.tar
 docker load < mysql_8.0.43.tar
 ```
 
----
+
 
 # 5. Docker仓库操作
 
@@ -679,8 +679,6 @@ docker import http://example.com/exampleimage.tgz example/imagerepo
 
 好的, 遵照您的要求, 以下是第7章的内容, 风格和格式与之前的章节保持一致, 侧重于上手和实用。
 
----
-
 ## 7. Dockerfile与自定义镜像
 
 通过镜像可以很方便地创建出容器, 但是有写场景下从仓库拉取的镜像并不能满足我们的需求:
@@ -811,7 +809,7 @@ docker run -d --name test-springboot-container -p 8080:8080 test-springboot:v1
 3. **理解 `COPY` 与 `ADD`**：优先使用 `COPY`, 除非确实需要 `ADD` 的自动解压或下载功能。
 4. **利用构建缓存**：将不经常变化的操作（如 `COPY package.json` 和 `RUN npm install`）放在 Dockerfile 前面, 以充分利用缓存加速构建。
 
----
+
 
 ## 8. Docker Compose
 
@@ -908,7 +906,7 @@ docker-compose-example/
 
 #### 2. 创建Dockerfile
 
-前端项目Dockerfile:
+**前端项目Dockerfile:**
 
 存储路径: `fe-app/Dockerfile`
 
@@ -941,7 +939,30 @@ RUN ln -s /usr/local/openresty/nginx /nginx
 
 ```
 
-后端项目Dockerfile:
+##### 说明:
+
+1. 阶段1 git获取源码
+
+   - 使用 git-alpine 镜像获取源码
+   - 通过 ARG 参数传入前端仓库地址和分支
+   - 将源码拉取到 /artifacts 目录
+
+2. 阶段2 node构建
+
+   - 使用 node:20-alpine 镜像，提供 Node.js 构建环境
+   - 从上一阶段拷贝源码到 /artifacts
+   - 执行 npm install --force 安装依赖
+   - 执行 npm run build 打包项目
+
+3. 阶段3 nginx运行
+
+   - 使用 openresty（基于 Nginx）作为 Web 服务器。
+   - 将构建好的静态文件拷贝到 /usr/local/openresty/nginx/html，由 Nginx 提供服务。
+   - 暴露 80 端口，供外部访问。
+   - 建立一个软链接 /nginx，方便后续管理或调试
+
+
+**后端项目Dockerfile:**
 
 存储路径: `fe-app/Dockerfile`
 
@@ -975,6 +996,29 @@ EXPOSE 8383
 
 CMD ["java", "-jar", "app.jar"]
 ```
+
+##### 说明:
+
+1. 阶段1 git获取源码
+
+   - 使用 git-alpine 轻量化镜像，只提供 Git 工具
+   - 通过 ARG 传入 代码仓库地址 和 分支名称，便于灵活切换版本
+   - 将源码clone到 /artifacts 目录
+
+2. 阶段2 maven构建
+
+   - 使用 maven 镜像，带有 JDK 17 环境，适合进行 Java 项目的构建。
+   - 从上一阶段拷贝源码到 /artifacts。
+   - 切换到指定的入口模块目录（ENTRANCE_MODULE），支持多模块项目灵活打包。
+   - 执行 mvn package -DskipTests 进行打包，生成 .jar 文件。
+   - 将生成的 Jar 移动到 /app/app.jar，为后续运行阶段做准备。
+
+3. 阶段3 运行jar包
+
+   - 使用 轻量化的 JDK 17 运行时镜像（不含 Maven 和构建工具）。
+   - 将打包好的 Jar 文件从 maven-build 阶段拷贝过来。
+   - 暴露 8383 端口，供外部访问。
+   - 默认启动命令：java -jar app.jar。
 
 #### 3. 创建docker-compose.yml
 
@@ -1072,15 +1116,15 @@ services:
 
 #### 4. 启动docker compose
 
-在Dockerfile同目录下, 执行`docker-compose up -d`
+在docker-compose-example目录(docker-compose.yml所在目录)下, 执行`docker-compose up -d`
 
 后续可以通过`docker-compose ps`查看启动情况, 通过`docker-compose logs`查看日志输出。
 
----
+如果有需要更改的配置, 只需要更改 docker-compose.yml 文件, 然后重执行`docker-compose up -d`即可
 
-好的, 这是根据您的提纲和要求编写的第9章 Docker网络内容, 保持了浅显易懂、偏重上手实践的风格。
+如果应用代码有新提交, 可以通过`docker-compose build --no-cache`强行重新构建镜像, 然后再次执行`docker-compose up -d`即可
 
----
+
 
 # 9. Docker网络
 
@@ -1244,7 +1288,7 @@ docker network inspect test-network
 
 更多Docker网络配置参考: https://docs.docker.com/network/
 
----
+
 
 # 10. 总结与问答
 
