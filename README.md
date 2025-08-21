@@ -8,14 +8,6 @@ docker上手指南
 
 **端口: 8383**
 
-**验证接口:**
-
-```
-查询所有: /api/books GET
-
-添加: /api/books POST
-
-删除: /api/books/{id} DELETE
-```
+**验证接口:127.0.0.1:80**
 
 **查看docker-guide请切换至`master`分支。**
