@@ -1443,20 +1443,6 @@ services:
       - "host.docker.internal:host-gateway"
 ```
 
-
-
-#### 示例:
-
-假设你的 MySQL 数据库运行在 Windows 宿主机上的 3306 端口。
-
-```shell
-# 错误（在容器内）: 会尝试连接容器自身的3306端口
-jdbc:mysql://localhost:3306/mydb
-
-# 正确（在容器内）: 使用 Docker 提供的特殊DNS解析到宿主机
-jdbc:mysql://host.docker.internal:3306/mydb
-```
-
 ## 9.4 扩展: 自定义网络与其他模式
 
 ### 1. 自定义 Docker Network
