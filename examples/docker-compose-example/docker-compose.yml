@@ -1,0 +1,46 @@
+services:
+  springboot-be-app:
+    image: be-app:v1
+    build:
+      context: be-app
+      args:
+        BEAPP_GIT_URL: http://10.10.64.98/chenweiguang/docker-guide
+        BEAPP_GIT_BRANCH: demo/docker-compose-backend-app
+        ENTRANCE_MODULE: spring-boot-backend-app
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "8383:8383"
+    restart: unless-stopped
+    depends_on: [mysql1, redis1]
+  vue-fe-app:
+    image: fe-app:v1
+    build:
+      context: fe-app
+      args:
+        FEAPP_GIT_URL: http://10.10.64.98/chenweiguang/docker-guide
+        FEAPP_GIT_BRANCH: demo/docker-compose-frontend-app
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "80:80"
+    volumes:
+      - ../_resources/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+    restart: unless-stopped
+  mysql1:
+    image: 10.10.63.97:8083/mysql:8.0.43
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_DATABASE: bookdb
+      TZ: Asia/Shanghai
+    volumes:
+      - ../_resources/mysql_initdb:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+  redis1:
+    image: 10.10.63.97:8083/redis:7.2.1
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ../_resources/redis.conf:/data/redis.conf
+    command: redis-server /data/redis.conf
+    restart: unless-stopped
