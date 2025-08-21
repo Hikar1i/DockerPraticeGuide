@@ -1425,20 +1425,30 @@ Linux环境中的docker配置host模式, 容器内可以直接使用 `localhost`
 
 在容器内, 使用特殊的主机名 **`host.docker.internal`** 来解析到宿主机的 IP 地址。
 
-Docker Desktop for Windows 安装完成后会自动将 `host.docker.internal` 解析到宿主机 IP, 但如果宿主机 IP 发生变化, 则需要手动在hosts中修改。
+Docker Desktop for Windows 安装完成后会自动将 `host.docker.internal` 解析到宿主机 IP, 但如果宿主机 IP 发生变化,
+则需要手动在hosts中修改。
 
 ![img.png](_images/hostdockerinternal.png)
 
-还有一种方法是创建容器时, 添加参数 `--add-host host.docker.internal:host-gateway` 
+还有一种方法是创建容器时, 添加参数 `--add-host host.docker.internal:host-gateway`
 
 其中 host-gateway 是 Docker 提供的特殊关键字，自动解析为宿主机网关
 
-docker-compose中可以在 `extra_hosts` 中添加:
+#### 示例
+
+```shell
+docker run -itd --add-host host.docker.internal:host-gateway  busybox:latest
+```
+
+docker-compose下中可以在 `extra_hosts` 中添加: `host.docker.internal:host-gateway`
+
+#### 示例
 
 ```yaml
 services:
   test-cont:
     image: busybox
+    tty: true
     extra_hosts:
       - "host.docker.internal:host-gateway"
 ```

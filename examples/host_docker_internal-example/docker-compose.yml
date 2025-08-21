@@ -1,0 +1,6 @@
+services:
+  test-cont:
+    image: busybox
+    tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
