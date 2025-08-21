@@ -23,7 +23,7 @@ services:
     environment:
       TZ: Asia/Shanghai
     ports:
-      - "80:80"
+      - "8585:80"
     volumes:
       - ../_resources/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
     restart: unless-stopped

@@ -1,0 +1,40 @@
+services:
+  # 第一组: nginx + centos7
+  nginx-group1:
+    image: nginx:alpine
+    container_name: nginx-group1
+    networks:
+      - net_group1
+
+  centos-group1:
+    image: centos:7
+    container_name: centos-group1
+    tty: true
+    networks:
+      - net_group1
+    depends_on:
+      - nginx-group1
+
+  # 第二组: mysql + centos7
+  mysql-group2:
+    image: mysql:8.0.43
+    container_name: mysql-group2
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - net_group2
+
+  centos-group2:
+    image: centos:7
+    container_name: centos-group2
+    tty: true
+    networks:
+      - net_group2
+    depends_on:
+      - mysql-group2
+
+networks:
+  net_group1:
+    driver: bridge
+  net_group2:
+    driver: bridge

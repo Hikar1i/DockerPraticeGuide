@@ -1,0 +1,11 @@
+# 网络1下的centos-group1可以访问网络1下的nginx-group1
+docker exec -it centos-group1 curl nginx-group1
+
+# 网络2下的centos-group2访问不通网络1下的nginx-group1
+docker exec -it centos-group2 curl nginx-group1
+
+# 网络1下的centos-group1访问不通网络2下的mysql-group2
+docker exec -it centos-group1 curl mysql-group2:3306
+
+# 网络2下的centos-group2可以访问网络2下的mysql-group2
+docker exec -it centos-group2 curl mysql-group2:3306
