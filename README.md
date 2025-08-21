@@ -2,91 +2,89 @@
 
 ## 1.1 传统物理机部署
 
-**背景**：
+**背景**: 
 
 - 早期应用直接部署在物理服务器上。
 
-**特点**：
+**特点**: 
 
 - 应用直接部署在物理服务器上, 一台服务器通常只运行一个应用或服务。
 - 应用直接依赖物理硬件资源, 应用与硬件强绑定。
 
-**问题**：
+**问题**: 
 
-- **环境依赖性强**：应用依赖特定操作系统和底层环境依赖, 迁移或复制需要重新配置环境。
-- **环境冲突**：不同应用依赖的库版本不同, 很容易互相打架。
-- **资源利用率低**：一台服务器通常只部署单个服务, CPU和内存常常闲置。
-- **扩展困难**：横向扩展以及上线新应用必须买新服务器, 周期长、成本高。
+- **环境依赖性强**: 应用依赖特定操作系统和底层环境依赖, 迁移或复制需要重新配置环境。
+- **环境冲突**: 不同应用依赖的库版本不同, 很容易互相打架。
+- **资源利用率低**: 一台服务器通常只部署单个服务, CPU和内存常常闲置。
+- **扩展困难**: 横向扩展以及上线新应用必须买新服务器, 周期长、成本高。
 
 ## 1.2 虚拟化技术
 
-**背景**：
+**背景**: 
 
 - 虚拟化（VM）技术普及（如 VMware、KVM、VirtualBox）。
 
-**特点**：
+**特点**: 
 
 - 通过虚拟机技术在一台物理机上运行多个隔离的操作系统实例。
 - 每个虚拟机包含完整的OS内核、虚拟硬件和应用环境。
 
-**优势**：
+**优势**: 
 
-- **资源隔离**：多个应用共享物理资源但互不干扰。
-- **资源利用率提升**：通过虚拟化层动态分配CPU、内存, 一台服务器可以部署多个应用和服务。
+- **资源隔离**: 多个应用共享物理资源但互不干扰。
+- **资源利用率提升**: 通过虚拟化层动态分配CPU、内存, 一台服务器可以部署多个应用和服务。
 
-**局限性**：
+**局限性**: 
 
-- **性能开销大**：每个VM需运行完整OS, 占用额外计算资源。
-- **启动速度慢**：VM启动需加载完整OS, 通常需要分钟级时间。
-- **镜像庞大**：VM镜像包含OS内核, 通常为GB级别, 分发效率低。
+- **性能开销大**: 每个VM需运行完整OS, 占用额外计算资源。
+- **启动速度慢**: VM启动需加载完整OS, 通常需要分钟级时间。
+- **镜像庞大**: VM镜像包含OS内核, 通常为GB级别, 分发效率低。
 
 ## 1.3 容器化技术
 
-**背景**：
+**背景**: 
 
 - Linux容器（LXC）等早期技术已实现进程级隔离, 但易用性和标准化不足。
 - Docker通过镜像分层、标准化接口和工具链, 将容器技术推向主流。
 
-**特点**：
+**特点**: 
 
 - 容器共享宿主机的操作系统内核, 只封装运行所需的依赖与环境
 - 容器就像“宿舍房间”, 虽然共用一栋楼（操作系统）, 但每个人有独立小空间
 
 ![img.png](_images/vmvscontainer.png)
 
-**核心改进**：
+**核心改进**: 
 
-- **轻量级**：容器共享主机OS内核, 无需虚拟化硬件, 性能损耗小, 资源占用极低（M级）。
-- **环境一致性**：镜像包含应用及其所有依赖, 实现“一次构建, 处处运行”。
-- **维护和扩展友好**：Docker使用的分层存储以及镜像的技术, 使得应用重复部分的复用更为容易, 也使得应用的维护更新更加简单,
+- **轻量级**: 容器共享主机OS内核, 无需虚拟化硬件, 性能损耗小, 资源占用极低（M级）。
+- **环境一致性**: 镜像包含应用及其所有依赖, 实现“一次构建, 处处运行”。
+- **维护和扩展友好**: Docker使用的分层存储以及镜像的技术, 使得应用重复部分的复用更为容易, 也使得应用的维护更新更加简单,
   基于基础镜像进一步扩展定制镜像也变得非常简单。
 
 ### 1.4 容器编排与集群
 
-**背景**：
+**背景**: 
 
 - 单台服务器不足以支撑大规模应用, 需要容器集群管理(Kubernetes、Docker Swarm)
 
-**特点**：
+**特点**: 
 
 - 自动化容器部署、扩缩容、负载均衡、健康检查
 - 跨多台服务器调度容器, 形成一个大集群
 
 ![img.png](_images/k8s.png)
 
-**优势**：
+**优势**: 
 
-- **高可用**：某个容器宕机, 会自动重启或迁移
-- **弹性伸缩**：根据流量自动增加/减少容器数量
-- **大规模管理**：上千容器集中管理
-
-
+- **高可用**: 某个容器宕机, 会自动重启或迁移
+- **弹性伸缩**: 根据流量自动增加/减少容器数量
+- **大规模管理**: 上千容器集中管理
 
 # 2. Docker的基本概念
 
-* **镜像 (Image)**：软件的“快照”, 就像“菜谱”
-* **容器 (Container)**：运行起来的应用, 就像“做好的菜”
-* **仓库 (Registry)**：放镜像的地方（类似“菜谱库” → GitHub for 镜像）
+* **镜像 (Image)**: 软件的“快照”, 就像“菜谱”
+* **容器 (Container)**: 运行起来的应用, 就像“做好的菜”
+* **仓库 (Registry)**: 放镜像的地方（类似“菜谱库” → GitHub for 镜像）
 
 ## 2.1 Docker 镜像
 
@@ -152,8 +150,6 @@ Docker 时常常会混淆容器和虚拟机。
 ## 2.4 整体工作架构
 
 ![docker](_images/docker-architecture.png)
-
-
 
 # 3. 环境准备与安装
 
@@ -230,13 +226,11 @@ https://desktop.docker.com/mac/main/amd64/Docker.dmg
 
 双击下载的 .dmg 文件, 然后将Docker图标拖拽到 Application 文件夹即可
 
-或者使用 Homebrew Cask 来进行安装：`brew install --cask docker`
-
-
+或者使用 Homebrew Cask 来进行安装: `brew install --cask docker`
 
 # 4. Docker镜像操作
 
-## 4.1 拉取镜像：`docker pull`
+## 4.1 拉取镜像: `docker pull`
 
 #### 完整命令:
 
@@ -253,7 +247,7 @@ docker pull mysql:8.0.43
 docker pull 10.10.63.97:8083/ieds-maven:3.9-amazoncorretto-17-alpine
 ```
 
-## 4.2 查看镜像：`docker images`
+## 4.2 查看镜像: `docker images`
 
 #### 输出结果如下:
 
@@ -261,7 +255,7 @@ docker pull 10.10.63.97:8083/ieds-maven:3.9-amazoncorretto-17-alpine
 
 包含了`镜像名(REPOSITORY)`、`标签`、`镜像 ID`、`创建时间` 以及 `所占用的空间`。
 
-## 4.3 镜像设置标签：`docker tag`
+## 4.3 镜像设置标签: `docker tag`
 
 可以使用 docker tag 命令, 为镜像添加一个新的标签。
 
@@ -274,7 +268,7 @@ docker tag mysql:8.0.43 mysql:8.0.43-test1
 docker tag 304929b30183 mysql:8.0.43-test1
 ```
 
-## 4.4 删除镜像：`docker rmi`
+## 4.4 删除镜像: `docker rmi`
 
 #### 完整命令:
 
@@ -293,7 +287,7 @@ docker rmi mysql:8.0.43
 docker rmi 05a60462f8ba
 ```
 
-## 4.5 镜像的保存与读取：`docker save -o` / `docker load -i`
+## 4.5 镜像的保存与读取: `docker save -o` / `docker load -i`
 
 这对命令用于将**一个或多个镜像**及其所有元数据完整地打包或解包, 实现镜像的离线备份和迁移。
 
@@ -327,7 +321,7 @@ docker save mysql:8.0.43 > mysql_8.0.43.tar
 #### 完整命令:
 
 ```shell
-docker load -i tarwenjianming
+docker load -i tar文件名
 ```
 
 #### 示例:
@@ -339,8 +333,6 @@ docker load -i mysql_8.0.43.tar
 # 使用重定向操作符（效果同上）
 docker load < mysql_8.0.43.tar
 ```
-
-
 
 # 5. Docker仓库操作
 
@@ -439,12 +431,53 @@ https://www.wangdu.site/course/2109.html
 
 `10.10.63.97:8083`
 
+> 理论上也可以将公司docker私服地址直接配置到镜像源中, 但考虑到公司docker私服无法代理官方仓库, 配置意义不大
+
+### 避免Docker安全性提醒
+
+insecure-registries配置用于配置Docker中用来临时绕过TLS认证证书认证的参数, 用于解决拉取镜像时提示不安全的问题
+
+daemon.json添加该段配置, 参照上文配置镜像源的步骤进行配置
+
+```json
+  "insecure-registries": [
+"10.10.63.97:8082",
+"10.10.63.97:8083"
+]
+
+```
+
+> 注意JSON格式, 不要漏了逗号, 或者{}范围错误, `daemon.json`配置错误会导致docker服务无法启动
+
+最终配置可能如下:
+
+```json
+{
+  "registry-mirrors": [
+    "https://docker.1panel.live",
+    "https://docker.1ms.run",
+    "https://dytt.online",
+    "https://docker-0.unsee.tech",
+    "https://lispy.org",
+    "https://docker.xiaogenban1993.com",
+    "https://666860.xyz",
+    "https://hub.rat.dev",
+    "https://docker.m.daocloud.io",
+    "https://demo.52013120.xyz",
+    "https://proxy.vvvv.ee",
+    "https://registry.cyou"
+  ],
+  "insecure-registries": [
+    "10.10.63.97:8082",
+    "10.10.63.97:8083"
+  ]
+}
+```
+
 ### 公司Docker仓库私服Nexus管理地址:
 
 `http://10.10.63.97:8081`
 账号密码同maven私服账号密码一致
-
-> 理论上也可以将公司docker私服地址直接配置到镜像源中, 但考虑到公司docker私服无法代理官方仓库, 配置意义不大
 
 ## 5.3 推送镜像至私服
 
@@ -470,7 +503,7 @@ docker push 10.10.63.97:8083/centos:7
 
 # 6. Docker容器操作
 
-## 6.1 创建容器：`docker run`
+## 6.1 创建容器: `docker run`
 
 **常用参数**:
 
@@ -478,12 +511,11 @@ docker push 10.10.63.97:8083/centos:7
 - -t : 终端
 - -d : 后台运行
 - -p : 指定端口映射
-- -v : 绑定挂载卷
+- -v : 绑定挂载卷(目录映射)
 - -e : 设置环境变量
 - --rm : 容器退出后随之删除
 - --name : 指定容器名称
 - --restart : 重启策略
-- --privileged : 赋予容器特权
 - --network : 指定网络模式
 
 ### 示例
@@ -511,7 +543,7 @@ docker run -it centos:7 /bin/bash
 启动一个mysql容器, 后台运行, 并设置密码为123456, 端口映射至宿主机的13306端口
 
 ```shell
-docker run -d -p 13306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+docker run -d -p 13306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0.43
 ```
 
 #### 示例4:
@@ -519,10 +551,10 @@ docker run -d -p 13306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
 启动一个git容器, 拉取代码到`D:\docker\git`目录后退出删除容器
 
 ```shell
-docker run --rm -it -v D:\docker\git:/git alpine/git:2.49.1 clone http://oauth2:z4wUCaxxxxxxxxxUszx@10.10.64.98/xxxx/xxxx.git
+docker run --rm -it -v D:\docker\git:/git alpine/git:2.49.1 clone http://10.10.64.98/chenweiguang/docker-guide.git
 ```
 
-## 6.2 查看容器：`docker ps`
+## 6.2 查看容器: `docker ps`
 
 可以查看正在运行的容器, 也可以查看所有容器, 包含已停止的容器
 
@@ -534,11 +566,13 @@ docker run --rm -it -v D:\docker\git:/git alpine/git:2.49.1 clone http://oauth2:
 
 ![img.png](_images/docker_ps.png)
 
-## 6.3 停止/启动/重启容器：`docker stop/start/restart`
+## 6.3 停止/启动/重启容器: `docker stop/start/restart`
 
 手动控制容器的运行状态
 
-## 6.4 访问容器：`docker exec`
+![img.png](dockerstatus/img.png)
+
+## 6.4 访问容器: `docker exec`
 
 #### 常用参数:
 
@@ -578,22 +612,22 @@ docker exec my_nginx_container cat /etc/nginx/nginx.conf
 docker exec -u www-data my_php_container touch /tmp/test.log
 ```
 
-## 6.5 删除容器：`docker rm`
+## 6.5 删除容器: `docker rm`
 
 #### 常用参数:
 
 - -f : 强制删除正在运行的容器, Docker 会发送 `SIGKILL` 信号给容器
 
-## 6.6 查看容器日志：`docker logs`
+## 6.6 查看容器日志: `docker logs`
 
 容器通常会将应用程序的标准输出（STDOUT）和标准错误（STDERR）作为其日志。`docker logs` 命令用于查看这些日志,
 是排查容器内应用运行问题的主要工具。
 
 #### 常用参数:
 
-- `-f` 或 `--follow`：**实时跟踪**日志输出, 类似于 `tail -f` 命令的效果。
-- `--tail <数字>`：仅显示最后指定行数的日志。例如 `--tail 50` 显示最后50行。
-- `-t` 或 `--timestamps`：在每条日志前显示**时间戳**。
+- `-f` 或 `--follow`: **实时跟踪**日志输出, 类似于 `tail -f` 命令的效果。
+- `--tail <数字>`: 仅显示最后指定行数的日志。例如 `--tail 50` 显示最后50行。
+- `-t` 或 `--timestamps`: 在每条日志前显示**时间戳**。
 
 #### 示例:
 
@@ -608,15 +642,15 @@ docker logs -f my_container
 docker logs --tail 20 -f my_container
 ```
 
-## 6.7 查看容器详细信息：`docker inspect`
+## 6.7 查看容器详细信息: `docker inspect`
 
 `docker inspect` 命令可以获取容器底层详细信息, 以 JSON 格式返回全部配置和状态数据。可以获取容器IP地址、检查挂载点、查看确切配置。
 
-### 常用参数:
+#### 常用参数:
 
-- `-f` 或 `--format`：使用 **Go 模板**来提取和格式化指定的信息, 而不是输出整个庞大的 JSON 对象。
+- `-f` 或 `--format`: 使用 **Go 模板**来提取和格式化指定的信息, 而不是输出整个庞大的 JSON 对象。
 
-### 示例:
+#### 示例:
 
 ```shell
 # 获取容器的所有信息（JSON格式）
@@ -625,9 +659,9 @@ docker inspect 7afb6266b914
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 7afb6266b914
 ```
 
-## 6.8 导入与导出容器快照：`docker export` 和 `docker import`
+## 6.8 导入与导出容器快照: `docker export` 和 `docker import`
 
-这对命令用于将容器的**文件系统**打包成一个 tar 归档文件, 并在不同系统间迁移。
+这对命令用于将容器的**文件系统**打包成一个 tar 归档文件, 并在不同系统间迁移, **多用于调试和备份场景**。
 
 `export/import` 操作的是**容器的当前文件系统快照**, 会丢失所有的历史记录、元数据（如环境变量、入口点、卷信息等）。
 
@@ -637,7 +671,7 @@ docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 7afb
 
 #### 常用参数:
 
-- `-o` 或 `--output`：将导出的内容写入指定文件, 而不是默认输出到 STDOUT。
+- `-o` 或 `--output`: 将导出的内容写入指定文件, 而不是默认输出到 STDOUT。
 
 #### 示例:
 
@@ -668,16 +702,14 @@ docker import http://example.com/exampleimage.tgz example/imagerepo
 
 ### `export/import`和 `save/load`的区别
 
-- **`docker export`**：导出一个**容器**的**当前文件系统**（扁平化, 无历史层）。
-- **`docker import`**：从归档文件创建一个**镜像**。
-- **`docker save`**：导出一个或多个**镜像**（包含所有历史层和元数据）。
-- **`docker load`**：导入一个由 `save` 导出的镜像包（包含所有历史层和元数据）。
+- **`docker export`**: 导出一个**容器**的**当前文件系统**（扁平化, 无历史层）。
+- **`docker import`**: 从归档文件创建一个**镜像**。
+- **`docker save`**: 导出一个或多个**镜像**（包含所有历史层和元数据）。
+- **`docker load`**: 导入一个由 `save` 导出的镜像包（包含所有历史层和元数据）。
 
 需要迁移或备份一个容器的当前状态时, 使用 `export/import`。
 
 需要完整地备份或迁移一个镜像（保留其构建历史和层结构）时, 使用 `save/load`。
-
-好的, 遵照您的要求, 以下是第7章的内容, 风格和格式与之前的章节保持一致, 侧重于上手和实用。
 
 ## 7. Dockerfile与自定义镜像
 
@@ -702,7 +734,7 @@ docker import http://example.com/exampleimage.tgz example/imagerepo
 | **`CMD`**        | 指定容器**启动时**默认执行的命令。一个 Dockerfile 只能有一条 `CMD`。   | `CMD ["nginx", "-g", "daemon off;"]`     |
 | **`ENTRYPOINT`** | 类似 `CMD`, 但不会被 `docker run` 后的参数覆盖, 通常用于设定固定入口。 | `ENTRYPOINT ["java", "-jar"]`            |
 
-## 7.2 构建镜像：`docker build`
+## 7.2 构建镜像: `docker build`
 
 使用 `docker build` 命令, 根据 Dockerfile 的指令构建镜像。
 
@@ -714,8 +746,8 @@ docker build [选项] <构建上下文路径>
 
 #### 常用选项:
 
-- `-t, --tag`：为构建的镜像设置名称和标签, 格式为 `镜像名:标签`。
-- `-f, --file`：指定 Dockerfile 的路径（如果文件名不是 `Dockerfile`）。
+- `-t, --tag`: 为构建的镜像设置名称和标签, 格式为 `镜像名:标签`。
+- `-f, --file`: 指定 Dockerfile 的路径（如果文件名不是 `Dockerfile`）。
 
 #### 示例:
 
@@ -738,7 +770,7 @@ docker build -t test-saiyan-vue:v1 --no-cache .
 
 docker build 命令获取上下文路径后, 会将路径下的所有内容打包, 然后上传给 Docker 引擎。
 
-**注意**：上下文路径下不要放无用的文件, 因为会一起打包发送给 docker 引擎, 如果文件过多会造成过程缓慢。
+**注意**: 上下文路径下不要放无用的文件, 因为会一起打包发送给 docker 引擎, 如果文件过多会造成过程缓慢。
 
 ## 7.3 综合示例
 
@@ -775,7 +807,7 @@ CMD ["java", "-jar", "app.jar"]
 
 ### 2. 构建镜像
 
-在 `test-springboot-project` 目录下执行：
+在 `test-springboot-project` 目录下执行: 
 
 ```shell
 docker build -t test-springboot:v1 .
@@ -793,8 +825,8 @@ docker run -d --name test-springboot-container -p 8080:8080 test-springboot:v1
 
 ## 7.6 最佳实践与技巧
 
-1. **选择小巧的基础镜像**：如 `-alpine` 版本, 可以显著减小镜像体积。
-2. **合并 `RUN` 指令**：减少镜像层数, 并清理缓存文件。
+1. **选择小巧的基础镜像**: 如 `-alpine` 版本, 可以显著减小镜像体积。
+2. **合并 `RUN` 指令**: 减少镜像层数, 并清理缓存文件。
    ```dockerfile
    # 不推荐
    RUN apt update
@@ -806,10 +838,8 @@ docker run -d --name test-springboot-container -p 8080:8080 test-springboot:v1
        apt install -y package && \
        rm -rf /var/lib/apt/lists/*
    ```
-3. **理解 `COPY` 与 `ADD`**：优先使用 `COPY`, 除非确实需要 `ADD` 的自动解压或下载功能。
-4. **利用构建缓存**：将不经常变化的操作（如 `COPY package.json` 和 `RUN npm install`）放在 Dockerfile 前面, 以充分利用缓存加速构建。
-
-
+3. **理解 `COPY` 与 `ADD`**: 优先使用 `COPY`, 除非确实需要 `ADD` 的自动解压或下载功能。
+4. **利用构建缓存**: 将不经常变化的操作（如 `COPY package.json` 和 `RUN npm install`）放在 Dockerfile 前面, 以充分利用缓存加速构建。
 
 ## 8. Docker Compose
 
@@ -943,24 +973,23 @@ RUN ln -s /usr/local/openresty/nginx /nginx
 
 1. 阶段1 git获取源码
 
-   - 使用 git-alpine 镜像获取源码
-   - 通过 ARG 参数传入前端仓库地址和分支
-   - 将源码拉取到 /artifacts 目录
+    - 使用 git-alpine 镜像获取源码
+    - 通过 ARG 参数传入前端仓库地址和分支
+    - 将源码拉取到 /artifacts 目录
 
 2. 阶段2 node构建
 
-   - 使用 node:20-alpine 镜像，提供 Node.js 构建环境
-   - 从上一阶段拷贝源码到 /artifacts
-   - 执行 npm install --force 安装依赖
-   - 执行 npm run build 打包项目
+    - 使用 node:20-alpine 镜像, 提供 Node.js 构建环境
+    - 从上一阶段拷贝源码到 /artifacts
+    - 执行 npm install --force 安装依赖
+    - 执行 npm run build 打包项目
 
 3. 阶段3 nginx运行
 
-   - 使用 openresty（基于 Nginx）作为 Web 服务器。
-   - 将构建好的静态文件拷贝到 /usr/local/openresty/nginx/html，由 Nginx 提供服务。
-   - 暴露 80 端口，供外部访问。
-   - 建立一个软链接 /nginx，方便后续管理或调试
-
+    - 使用 openresty（基于 Nginx）作为 Web 服务器。
+    - 将构建好的静态文件拷贝到 /usr/local/openresty/nginx/html, 由 Nginx 提供服务。
+    - 暴露 80 端口, 供外部访问。
+    - 建立一个软链接 /nginx, 方便后续管理或调试
 
 **后端项目Dockerfile:**
 
@@ -1001,24 +1030,24 @@ CMD ["java", "-jar", "app.jar"]
 
 1. 阶段1 git获取源码
 
-   - 使用 git-alpine 轻量化镜像，只提供 Git 工具
-   - 通过 ARG 传入 代码仓库地址 和 分支名称，便于灵活切换版本
-   - 将源码clone到 /artifacts 目录
+    - 使用 git-alpine 轻量化镜像, 只提供 Git 工具
+    - 通过 ARG 传入 代码仓库地址 和 分支名称, 便于灵活切换版本
+    - 将源码clone到 /artifacts 目录
 
 2. 阶段2 maven构建
 
-   - 使用 maven 镜像，带有 JDK 17 环境，适合进行 Java 项目的构建。
-   - 从上一阶段拷贝源码到 /artifacts。
-   - 切换到指定的入口模块目录（ENTRANCE_MODULE），支持多模块项目灵活打包。
-   - 执行 mvn package -DskipTests 进行打包，生成 .jar 文件。
-   - 将生成的 Jar 移动到 /app/app.jar，为后续运行阶段做准备。
+    - 使用 maven 镜像, 带有 JDK 17 环境, 适合进行 Java 项目的构建。
+    - 从上一阶段拷贝源码到 /artifacts。
+    - 切换到指定的入口模块目录（ENTRANCE_MODULE）, 支持多模块项目灵活打包。
+    - 执行 mvn package -DskipTests 进行打包, 生成 .jar 文件。
+    - 将生成的 Jar 移动到 /app/app.jar, 为后续运行阶段做准备。
 
 3. 阶段3 运行jar包
 
-   - 使用 轻量化的 JDK 17 运行时镜像（不含 Maven 和构建工具）。
-   - 将打包好的 Jar 文件从 maven-build 阶段拷贝过来。
-   - 暴露 8383 端口，供外部访问。
-   - 默认启动命令：java -jar app.jar。
+    - 使用 轻量化的 JDK 17 运行时镜像（不含 Maven 和构建工具）。
+    - 将打包好的 Jar 文件从 maven-build 阶段拷贝过来。
+    - 暴露 8383 端口, 供外部访问。
+    - 默认启动命令: java -jar app.jar。
 
 #### 3. 创建docker-compose.yml
 
@@ -1073,46 +1102,46 @@ services:
 
 ##### 说明:
 
-1. 这份 docker-compose.yml 文件定义了一个由 四个服务 组成的应用环境，分别是：
+1. 这份 docker-compose.yml 文件定义了一个由 四个服务 组成的应用环境, 分别是: 
 
-    - springboot-be-app：Spring Boot 后端服务
-    - vue-fe-app：Vue 前端服务
-    - mysql1：MySQL 数据库服务
-    - redis1：Redis 缓存服务
+    - springboot-be-app: Spring Boot 后端服务
+    - vue-fe-app: Vue 前端服务
+    - mysql1: MySQL 数据库服务
+    - redis1: Redis 缓存服务
 
 2. Spring Boot 后端服务, 命名为springboot-be-app:
 
-    - image：生成的镜像名称为 be-app:v1。
-    - build：从 be-app 目录构建镜像，并通过 args 参数指定 Git 仓库地址、分支和入口模块。
-    - environment：设置时区为上海。
-    - ports：将容器的 8383 端口映射到宿主机的 8383，供前端调用。
-    - restart：容器异常退出会自动重启，除非手动停止。
-    - depends_on：依赖 mysql1 和 redis1，保证数据库和缓存先启动。
+    - image: 生成的镜像名称为 be-app:v1。
+    - build: 从 be-app 目录构建镜像, 并通过 args 参数指定 Git 仓库地址、分支和入口模块。
+    - environment: 设置时区为上海。
+    - ports: 将容器的 8383 端口映射到宿主机的 8383, 供前端调用。
+    - restart: 容器异常退出会自动重启, 除非手动停止。
+    - depends_on: 依赖 mysql1 和 redis1, 保证数据库和缓存先启动。
 
 3. Vue 前端服务, 命名为vue-fe-app
 
-    - image：生成的镜像名称为 fe-app:v1。
-    - build：从 fe-app 目录构建镜像，指定前端代码仓库和分支。
-    - environment：设置时区为上海。
-    - ports：将宿主机 80 端口映射到容器 80，用于对外提供前端访问。
-    - volumes：挂载自定义的 nginx.conf 配置文件，替换容器内的默认配置，实现灵活的前端路由和代理。
-    - restart：容器异常退出会自动重启。
+    - image: 生成的镜像名称为 fe-app:v1。
+    - build: 从 fe-app 目录构建镜像, 指定前端代码仓库和分支。
+    - environment: 设置时区为上海。
+    - ports: 将宿主机 80 端口映射到容器 80, 用于对外提供前端访问。
+    - volumes: 挂载自定义的 nginx.conf 配置文件, 替换容器内的默认配置, 实现灵活的前端路由和代理。
+    - restart: 容器异常退出会自动重启。
 
 4. MySQL 数据库服务, 命名为mysql1:
-    - image：使用私有仓库中的 MySQL 8.0.43 镜像。
-    - environment：
-    - MYSQL_ROOT_PASSWORD：设置 root 用户密码为 123456。
-    - MYSQL_DATABASE：初始化时创建 bookdb 数据库。
-    - TZ：设置时区为上海。
-    - volumes：挂载初始化 SQL 文件目录，容器启动时会自动执行里面的 SQL 脚本。
-    - restart：异常退出时自动重启。
+    - image: 使用私有仓库中的 MySQL 8.0.43 镜像。
+    - environment: 
+    - MYSQL_ROOT_PASSWORD: 设置 root 用户密码为 123456。
+    - MYSQL_DATABASE: 初始化时创建 bookdb 数据库。
+    - TZ: 设置时区为上海。
+    - volumes: 挂载初始化 SQL 文件目录, 容器启动时会自动执行里面的 SQL 脚本。
+    - restart: 异常退出时自动重启。
 
 5. Redis 缓存服务, 命名为redis1:
-    - image：使用私有仓库中的 Redis 7.2.1 镜像。
-    - environment：设置时区为上海。
-    - volumes：挂载自定义的 redis.conf 配置文件。
-    - command：启动时加载挂载的配置文件，保证按需定制 Redis 行为。
-    - restart：异常退出时自动重启。
+    - image: 使用私有仓库中的 Redis 7.2.1 镜像。
+    - environment: 设置时区为上海。
+    - volumes: 挂载自定义的 redis.conf 配置文件。
+    - command: 启动时加载挂载的配置文件, 保证按需定制 Redis 行为。
+    - restart: 异常退出时自动重启。
 
 #### 4. 启动docker compose
 
@@ -1123,8 +1152,6 @@ services:
 如果有需要更改的配置, 只需要更改 docker-compose.yml 文件, 然后重执行`docker-compose up -d`即可
 
 如果应用代码有新提交, 可以通过`docker-compose build --no-cache`强行重新构建镜像, 然后再次执行`docker-compose up -d`即可
-
-
 
 # 9. Docker网络
 
@@ -1163,7 +1190,7 @@ docker run -d -p 8080:80 -p 8443:443 nginx:alpine
 docker run -d -p 53:53/udp dns-server
 ```
 
-## 9.2 Docker网络模式：bridge和host
+## 9.2 Docker网络模式: bridge和host
 
 Docker 容器支持多种网络模式, 最常用的是 `bridge`（桥接）和 `host`（主机）模式。
 
@@ -1172,11 +1199,11 @@ Docker 容器支持多种网络模式, 最常用的是 `bridge`（桥接）和 `
 Docker内置**默认**的网络模式。Docker 会为每个容器分配一个独立的网络命名空间和IP地址, 并通过一个名为 `docker0`
 的虚拟网桥将所有这些容器连接起来。
 
-- **特点**：
+- **特点**: 
     - 容器拥有独立的IP（如 `172.17.0.2`）。
     - 容器间通过IP或容器名（在自定义网络中）通信。
     - **外部访问容器必须通过 `-p` 进行端口映射**。
-- **适用场景**：绝大多数需要网络隔离的应用场景。
+- **适用场景**: 绝大多数需要网络隔离的应用场景。
 
 #### 示例:
 
@@ -1192,12 +1219,12 @@ docker run -d --name nginx-bridge --network bridge nginx:alpine
 
 容器不会虚拟出自己的网卡, 而是直接**使用宿主机的网络命名空间**, 直接使用宿主机的IP和端口。
 
-- **特点**：
+- **特点**: 
     - 容器没有独立的IP, 直接使用宿主机IP。
     - **容器内监听的端口直接映射到宿主机, 无需 `-p` 参数 (指定了也无效)**。
     - 网络性能最好, 几乎没有损耗。
-- **缺点**：容器与宿主机端口冲突风险高。
-- **适用场景**：对网络性能要求极高的场景。
+- **缺点**: 容器与宿主机端口冲突风险高。
+- **适用场景**: 对网络性能要求极高的场景。
 
 #### 示例:
 
@@ -1228,26 +1255,26 @@ https://docs.docker.com/engine/network/tutorials/host/#prerequisites
 
 在 Windows 上使用 Docker Desktop 时, 需要注意其特殊的网络实现, 这有时会导致与纯 Linux 环境下的差异。
 
-- **宿主机地址不是 `localhost`**：在 Linux 上, 访问 `localhost:8080` 即可访问映射的容器服务。但在 **Windows/macOS 的
+- **宿主机地址不是 `localhost`**: 在 Linux 上, 访问 `localhost:8080` 即可访问映射的容器服务。但在 **Windows/macOS 的
   Docker Desktop 中, 容器实际是运行在一个轻量级 Linux VM 中**。因此, 你需要使用这个 **VM 的 IP 地址**或特殊的 *
   *`host.docker.internal`** 主机名来访问宿主机上的服务。
-- **端口映射访问**：从 Windows 宿主机访问容器映射的端口, 通常使用 `localhost:端口` 是可行的（Docker Desktop 做了转发）。但从
+- **端口映射访问**: 从 Windows 宿主机访问容器映射的端口, 通常使用 `localhost:端口` 是可行的（Docker Desktop 做了转发）。但从
   **容器内部访问宿主机**上运行的服务（如数据库）时, 则不能使用 `localhost`（因为那指向容器自己）。
-- **解决方案**：在容器内, 使用特殊的主机名 **`host.docker.internal`** 来解析到宿主机的 IP 地址。
+- **解决方案**: 在容器内, 使用特殊的主机名 **`host.docker.internal`** 来解析到宿主机的 IP 地址。
 
 #### 示例:
 
 假设你的 MySQL 数据库运行在 Windows 宿主机上的 3306 端口。
 
 ```shell
-# 错误（在容器内）：会尝试连接容器自身的3306端口
+# 错误（在容器内）: 会尝试连接容器自身的3306端口
 jdbc:mysql://localhost:3306/mydb
 
-# 正确（在容器内）：使用 Docker 提供的特殊DNS解析到宿主机
+# 正确（在容器内）: 使用 Docker 提供的特殊DNS解析到宿主机
 jdbc:mysql://host.docker.internal:3306/mydb
 ```
 
-## 9.4 扩展：自定义网络与其他模式
+## 9.4 扩展: 自定义网络与其他模式
 
 ### 1. 自定义 Docker Network
 
@@ -1273,12 +1300,12 @@ docker network inspect test-network
 
 ### 2. Docker其他网络模式
 
-- **`none` 模式**：容器没有任何网络接口, 只有 `lo`（本地回环）, 处于完全隔离的状态。
+- **`none` 模式**: 容器没有任何网络接口, 只有 `lo`（本地回环）, 处于完全隔离的状态。
   ```shell
   docker run -d --network none --name isolated-container alpine sleep 1d
   ```
 
-- **`container` 模式**：新创建的容器不会创建自己的网络栈, 而是与一个**已存在的容器共享**网络命名空间（IP和端口全部共享）。
+- **`container` 模式**: 新创建的容器不会创建自己的网络栈, 而是与一个**已存在的容器共享**网络命名空间（IP和端口全部共享）。
   ```shell
   # 第二个容器与第一个容器共享网络栈
   docker run -d --name app-1 --network test-network nginx:alpine
@@ -1287,8 +1314,6 @@ docker network inspect test-network
   ```
 
 更多Docker网络配置参考: https://docs.docker.com/network/
-
-
 
 # 10. 总结与问答
 
