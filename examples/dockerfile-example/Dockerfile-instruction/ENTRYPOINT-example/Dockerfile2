@@ -1,0 +1,11 @@
+FROM python:3.9-alpine
+
+COPY ./resource /
+
+WORKDIR /
+
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]
+
+CMD ["python", "app.py"]
